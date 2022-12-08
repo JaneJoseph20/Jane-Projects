@@ -1,0 +1,237 @@
+season,episode_num_in_season,title,us_viewers
+1,1,The One Where Monica Gets a Roommate,21500000
+1,2,The One with the Sonogram at the End,20200000
+1,3,The One with the Thumb,19500000
+1,4,The One with George Stephanopoulos,19700000
+1,5,The One with the East German Laundry Detergent,18600000
+1,6,The One with the Butt,18200000
+1,7,The One with the Blackout,23500000
+1,8,The One Where Nana Dies Twice,21100000
+1,9,The One Where Underdog Gets Away,23100000
+1,10,The One with the Monkey,19900000
+1,11,The One with Mrs. Bing,26600000
+1,12,The One with the Dozen Lasagnas,24000000
+1,13,The One with the Boobies,25800000
+1,14,The One with the Candy Hearts,23800000
+1,15,The One with the Stoned Guy,24800000
+1,16,The One with Two Parts: Part 1,26100000
+1,17,The One with Two Parts: Part 2,30500000
+1,18,The One with All the Poker,30400000
+1,19,The One Where the Monkey Gets Away,29400000
+1,20,The One with the Evil Orthodontist,30000000
+1,21,The One with the Fake Monica,28400000
+1,22,The One with the Ick Factor,29900000
+1,23,The One with the Birth,28700000
+1,24,The One Where Rachel Finds Out,31300000
+2,1,The One with Ross's New Girlfriend,32100000
+2,2,The One with the Breast Milk,29800000
+2,3,The One Where Heckles Dies,30200000
+2,4,The One with Phoebe's Husband,28100000
+2,5,The One with Five Steaks and an Eggplant,28300000
+2,6,The One with the Baby on the Bus,30200000
+2,7,The One Where Ross Finds Out,30500000
+2,8,The One with the List,32900000
+2,9,The One with Phoebe's Dad,27800000
+2,10,The One with Russ,32200000
+2,11,The One with the Lesbian Wedding,31600000
+2,12,The One After the Superbowl: Part 1,52900000
+2,13,The One After the Superbowl: Part 2,52900000
+2,14,The One with the Prom Video,33600000
+2,15,The One Where Ross and Rachel... You Know,32900000
+2,16,The One Where Joey Moves Out,31100000
+2,17,The One Where Eddie Moves In,30200000
+2,18,The One Where Dr. Ramoray Dies,30100000
+2,19,The One Where Eddie Won't Go,31200000
+2,20,The One Where Old Yeller Dies,27400000
+2,21,The One with the Bullies,24700000
+2,22,The One with the Two Parties,25500000
+2,23,The One with the Chicken Pox,26100000
+2,24,The One with Barry and Mindy's Wedding,29000000
+3,1,The One with the Princess Leia Fantasy,26760000
+3,2,The One Where No One's Ready,26730000
+3,3,The One with the Jam,25230000
+3,4,The One with the Metaphorical Tunnel,26100000
+3,5,The One with Frank Jr.,23250000
+3,6,The One with the Flashback,23270000
+3,7,The One with the Race Car Bed,27360000
+3,8,The One with the Giant Poking Device,28690000
+3,9,The One with the Football,29280000
+3,10,The One Where Rachel Quits,25100000
+3,11,The One Where Chandler Can't Remember Which Sister,29800000
+3,12,The One with All the Jealousy,29610000
+3,13,The One Where Monica and Richard Are Just Friends,28030000
+3,14,The One with Phoebe's Ex-Partner,28910000
+3,15,The One Where Ross and Rachel Take a Break,27250000
+3,16,The One with the Morning After,28260000
+3,17,The One Without the Ski Trip,25840000
+3,18,The One with the Hypnosis Tape,28070000
+3,19,The One with the Tiny T-Shirt,23650000
+3,20,The One with the Dollhouse,24360000
+3,21,The One with the Chick and the Duck,23220000
+3,22,The One with the Screamer,22630000
+3,23,The One with Ross's Thing,24170000
+3,24,The One with the Ultimate Fighting Champion,23070000
+3,25,The One at the Beach,23390000
+4,1,The One with the Jellyfish,29430000
+4,2,The One with the Cat,25540000
+4,3,The One with the 'Cuffs,23980000
+4,4,The One with the Ballroom Dancing,24310000
+4,5,The One with Joey's New Girlfriend,24350000
+4,6,The One with the Dirty Girl,25680000
+4,7,The One Where Chandler Crosses the Line,26350000
+4,8,The One with Chandler in a Box,26760000
+4,9,The One Where They're Going to Party!,23890000
+4,10,The One with the Girl from Poughkeepsie,23220000
+4,11,The One with Phoebe's Uterus,23660000
+4,12,The One with the Embryos,27140000
+4,13,The One with Rachel's Crush,25270000
+4,14,The One with Joey's Dirty Day,25080000
+4,15,The One with All the Rugby,24440000
+4,16,The One with the Fake Party,23130000
+4,17,The One with the Free Porn,23220000
+4,18,The One with Rachel's New Dress,21720000
+4,19,The One with All the Haste,21760000
+4,20,The One with All the Wedding Dresses,21940000
+4,21,The One with the Invitation,21510000
+4,22,The One with the Worst Best Man Ever,23150000
+4,23,The One with Ross's Wedding,31610000
+4,24,The One with Ross's Wedding: Part 2,31610000
+5,1,The One After Ross Says Rachel,31120000
+5,2,The One with All the Kissing,25360000
+5,3,The One Hundredth,26820000
+5,4,The One Where Phoebe Hates PBS,24090000
+5,5,The One with the Kips,25870000
+5,6,The One with the Yeti,24990000
+5,7,The One Where Ross Moves In,24440000
+5,8,The One with All the Thanksgivings,23920000
+5,9,The One with Ross's Sandwich,23030000
+5,10,The One with the Inappropriate Sister,23670000
+5,11,The One with All the Resolutions,27020000
+5,12,The One with Chandler's Work Laugh,24820000
+5,13,The One with Joey's Bag,24920000
+5,14,The One Where Everybody Finds Out,27700000
+5,15,The One with the Girl Who Hits Joey,29310000
+5,16,The One with the Cop,26020000
+5,17,The One with Rachel's Inadvertent Kiss,24480000
+5,18,The One Where Rachel Smokes,21880000
+5,19,The One Where Ross Can't Flirt,20850000
+5,20,The One with the Ride Along,19630000
+5,21,The One with the Ball,20920000
+5,22,The One with Joey's Big Break,21280000
+5,23,The One in Vegas: Part 1,25900000
+5,24,The One in Vegas: Part 2,25900000
+6,1,The One After Vegas,27740000
+6,2,The One Where Ross Hugs Rachel,22950000
+6,3,The One with Ross's Denial,21600000
+6,4,The One Where Joey Loses His Insurance,21070000
+6,5,The One with Joey's Porsche,22390000
+6,6,The One on the Last Night,23590000
+6,7,The One Where Phoebe Runs,22750000
+6,8,The One with Ross' Teeth,22140000
+6,9,The One Where Ross Got High,19170000
+6,10,The One with the Routine,22430000
+6,11,The One with the Apothecary Table,22260000
+6,12,The One with the Joke,22330000
+6,13,The One with Rachel's Sister,24140000
+6,14,The One Where Chandler Can't Cry,23820000
+6,15,The One That Could Have Been: Part 1,25890000
+6,16,The One That Could Have Been: Part 2,25890000
+6,17,The One with Unagi,22210000
+6,18,The One Where Ross Dates a Student,20520000
+6,19,The One with Joey's Fridge,21460000
+6,20,The One with Mac and C.H.E.E.S.E.,18810000
+6,21,The One Where Ross Meets Elizabeth's Dad,20630000
+6,22,The One Where Paul's the Man,20010000
+6,23,The One with the Ring,20870000
+6,24,The One with the Proposal: Part 1,30730000
+6,25,The One with the Proposal: Part 2,30730000
+7,1,The One with Monica's Thunder,25540000
+7,2,The One with Rachel's Book,27930000
+7,3,The One with Phoebe's Cookies,22720000
+7,4,The One with Rachel's Assistant,22660000
+7,5,The One with the Engagement Picture,24430000
+7,6,The One with the Nap Partners,22010000
+7,7,The One with Ross's Library Book,23730000
+7,8,The One Where Chandler Doesn't Like Dogs,16570000
+7,9,The One with All the Candy,21080000
+7,10,The One with the Holiday Armadillo,23260000
+7,11,The One with All the Cheesecakes,24370000
+7,12,The One Where They're Up All Night,22860000
+7,13,The One Where Rosita Dies,22240000
+7,14,The One Where They All Turn Thirty,22400000
+7,15,The One with Joey's New Brain,21750000
+7,16,The One with the Truth About London,21220000
+7,17,The One with the Cheap Wedding Dress,20840000
+7,18,The One with Joey's Award,17810000
+7,19,The One with Ross and Monica's Cousin,16540000
+7,20,The One with Rachel's Big Kiss,16300000
+7,21,The One with the Vows,15650000
+7,22,The One with Chandler's Dad,17230000
+7,23,The One with Monica and Chandler's Wedding: Part 1,30050000
+7,24,The One with Monica and Chandler's Wedding: Part 2,30050000
+8,1,The One After I Do,31700000
+8,2,The One with the Red Sweater,30040000
+8,3,The One Where Rachel Tells...,29200000
+8,4,The One with the Videotape,25580000
+8,5,The One with Rachel's Date,25640000
+8,6,The One with the Halloween Party,26960000
+8,7,The One with the Stain,24240000
+8,8,The One with the Stripper,26540000
+8,9,The One with the Rumor,24240000
+8,10,The One with Monica's Boots,22440000
+8,11,The One with Ross's Step Forward,23850000
+8,12,The One Where Joey Dates Rachel,25530000
+8,13,The One Where Chandler Takes a Bath,29240000
+8,14,The One with the Secret Closet,28640000
+8,15,The One with the Birthing Video,28640000
+8,16,The One Where Joey Tells Rachel,27520000
+8,17,The One with the Tea Leaves,26300000
+8,18,The One in Massapequa,22050000
+8,19,The One with Joey's Interview,22590000
+8,20,The One with the Baby Shower,22240000
+8,21,The One with the Cooking Class,23970000
+8,22,The One Where Rachel Is Late,24310000
+8,23,The One Where Rachel Has a Baby: Part 1,34910000
+8,24,The One Where Rachel Has a Baby: Part 2,34910000
+9,1,The One Where No One Proposes,34010000
+9,2,The One Where Emma Cries,28930000
+9,3,The One with the Pediatrician,26620000
+9,4,The One with the Sharks,25810000
+9,5,The One with Phoebe's Birthday Dinner,24460000
+9,6,The One with the Male Nanny,27510000
+9,7,The One with Ross's Inappropriate Song,25350000
+9,8,The One with Rachel's Other Sister,26760000
+9,9,The One with Rachel's Phone Number,25420000
+9,10,The One with Christmas in Tulsa,22280000
+9,11,The One Where Rachel Goes Back to Work,23670000
+9,12,The One with Phoebe's Rats,23660000
+9,13,The One Where Monica Sings,25820000
+9,14,The One with the Blind Dates,23370000
+9,15,The One with the Mugging,20850000
+9,16,The One with the Boob Job,19520000
+9,17,The One with the Memorial Service,21000000
+9,18,The One with the Lottery,20790000
+9,19,The One with Rachel's Dream,18240000
+9,20,The One with the Soap Opera Party,20710000
+9,21,The One with the Fertility Test,19030000
+9,22,The One with the Donor,19550000
+9,23,The One in Barbados: Part 1,25460000
+9,24,The One in Barbados: Part 2,25460000
+10,1,The One After Joey and Rachel Kiss,24540000
+10,2,The One Where Ross Is Fine,22370000
+10,3,The One with Ross's Tan,21870000
+10,4,The One with the Cake,18760000
+10,5,The One Where Rachel's Sister Babysits,19370000
+10,6,The One with Ross' Grant,20370000
+10,7,The One with the Home Study,20210000
+10,8,The One with the Late Thanksgiving,20660000
+10,9,The One with the Birth Mother,25480000
+10,10,The One Where Chandler Gets Caught,26680000
+10,11,The One Where the Stripper Cries,24910000
+10,12,The One with Phoebe's Wedding,25900000
+10,13,The One Where Joey Speaks French,24270000
+10,14,The One with Princess Consuela,22820000
+10,15,The One Where Estelle Dies,22640000
+10,16,The One with Rachel's Going Away Party,24510000
+10,17,The Last One,52460000
+10,18,The Last One,52460000
