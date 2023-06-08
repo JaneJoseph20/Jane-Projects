@@ -6,7 +6,7 @@ Part 1: [Detailed Analysis](https://github.com/JaneJoseph20/Jane-School-Projects
 
 Part 2: [Menu](https://github.com/JaneJoseph20/Jane-School-Projects/blob/main/Midterm%20project_Jane2_part%202.ipynb)
 
-### Project 2: Regression analysis to determine the statistical significance of Factors Influencing Flight Ticket Prices
+### Project 2: Unveiling the Secrets of Flight Ticket Pricing: Statistical Regression Analysis of Factors Influencing Airfare
 [Business Report](https://github.com/JaneJoseph20/Jane-School-Projects/blob/main/Business%20Report.pdf)
 
 ### Project 3: Decoding Books' Success on Amazon: Insights for Authors
