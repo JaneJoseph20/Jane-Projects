@@ -8,3 +8,15 @@ Part 2: [Menu](https://github.com/JaneJoseph20/Jane-School-Projects/blob/main/Mi
 
 ### Project 2: Regression analysis to determine the statistical significance of Factors Influencing Flight Ticket Prices
 [Business Report](https://github.com/JaneJoseph20/Jane-School-Projects/blob/main/Business%20Report.pdf)
+
+### Project 3: Decoding Books' Success on Amazon: Insights for Authors
+Analyzed the Amazon Bestselling Books dataset to understand key factors contributing to success.
+Explored popular genres, influential authors, pricing dynamics, and language trends in book titles.
+Provided valuable insights for writing, marketing, and publishing strategies to increase chances of success.
+Identified fiction as the most popular genre, with consistent appearances of certain authors on the bestseller list.
+Revealed the influence of genre and publication year on book prices.
+Conducted sentiment analysis to uncover dominant themes and emotions in top-selling books.
+Actionable recommendations for authors to align their storytelling with readers' preferences.
+Gain insights to enhance your chances of becoming a bestselling author on Amazon.
+
+[Python Notebook](https://github.com/JaneJoseph20/Jane-School-Projects/blob/main/Data%20Visualization%20Final%20Project.ipynb)
