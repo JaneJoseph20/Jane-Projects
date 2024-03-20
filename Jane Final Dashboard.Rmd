@@ -1,0 +1,1430 @@
+---
+title: "Final Dashboard"
+output:
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    source_code: embed
+    theme: united
+    vertical_layout: scroll
+editor_options: 
+  markdown: 
+    wrap: sentence
+---
+
+```{r setup, include=FALSE,warning=FALSE}
+#include=FALSE will not include r code in output
+#warning=FALSE will remove any warnings from output
+
+library(GGally) #v2.1.2
+library(ggcorrplot) #v0.1.4
+library(janitor) #v2.2.0 clean_names()
+#library(MASS) #v7.3-58.2 for Boston data
+library(flexdashboard) #v0.6.0
+library(plotly) #v4.10.1
+library(crosstalk) #v1.2.0
+library(knitr) #v1.42 kable()
+library(tidymodels) 
+  #library(parsnip) #v1.1.0 linear_reg(), set_engine(), set_mode(), fit(), predict()
+  #library(yardstick) #v1.2.0 metrics(), rac_auc(), roc_curve(), metric_set(), conf_matrix()
+  #library(dplyr) #v1.1.2 %>%, select(), select_if(), filter(), mutate(), group_by(), 
+    #summarize(), tibble()
+library(ggplot2) #v3.4.2 ggplot()
+  #library(broom) #v1.0.5 for tidy(), augment(), glance()
+  #library(rsample) #v1.1.1 initial_split()
+library(vip) #v0.4.1 vip() (variable importance)
+library(tree) #v1.0-43
+library(rpart) #v4.1.21
+library(rpart.plot) #v3.1.1
+library(cowplot) #new
+```
+
+```{r load_data}
+#Load the data
+df_CS <- readxl::read_excel("CatalogSales.xlsx") %>% 
+  clean_names()
+
+# Renaming certain variables
+df_CS <- df_CS %>%
+  rename(first_update_days_ago = x1st_update_days_ago)
+
+#Changing the following variables as factors becaus ethey have binary values
+df_CS <- df_CS %>%
+  mutate(us_yn = factor(us_yn),
+         web_order = factor(web_order),
+         gender_male = factor(gender_male),
+         address_is_res_yn = factor(address_is_res_yn),
+         purchase_yn = factor(purchase_yn))
+```
+
+# Executive Summary
+
+## Row {data-height="600"}
+
+### Executive Summary
+
+Our analysis aimed to understand customer purchasing behavior using a dataset comprising 2000 records and 9 variables.
+
+The expectation was to answer three business questions and the primary challenge was twofold: predicting both the likelihood of a purchase ("purchase_yn") and the specific purchase amount ("purchase_amt").
+
+**Models Applied for Predicting the Categorical Target are as follows ("purchase_yn")**
+
+-   Logistic Model
+
+-   Tuned Random Forest Model - **Selected**
+
+-   Tuned Decision Tree Model
+
+**Models Applied for Predicting the Continuous Target are as follows ("purchase_amt")**
+
+-   Regression Model
+
+-   Decision Tree Model
+
+-   Ridge Regression Model
+
+For predicting purchase decisions, we applied various classification models including logistic regression, decision trees, and random forests.
+Our **"Tuned Random Forest Model"** emerged as the most effective, achieving an **accuracy of 94.1%** and providing valuable insights into customer purchase behavior.
+
+Regarding predicting purchase amounts, we utilized regression models such as linear regression, ridge regression, and decision trees.
+Despite our efforts, the highest R-squared value obtained was 28.2%, indicating limited success in explaining the variance in purchase amounts.
+
+### Business Questions and Answers
+
+**Can predictive models accurately forecast whether a customer will make a purchase?**
+
+Predictive Modeling for Purchase Decisions: Using the "Tuned Random Forest Model," we can predict whether a customer will make a purchase with 94.1% accuracy.
+
+**How does residential status influence the likelihood of customer purchases?**
+
+The pruned regression model suggests that if the address is residential, the expected purchase amount decreases by approximately 6.993 units.
+However, please note the accuracy of the model is only 28.2%.
+
+**What is the impact of web orders on the amount spent by customers?**
+
+According to the pruned regression model, if a purchase is made through a web order, the expected purchase amount increases by approximately 13.099 units.
+However, please note the accuracy of the model is only 28.2%.
+
+**Final Recommendations:**
+
+-   Implement the "Tuned Random Forest Model" for predicting purchase decisions due to its high accuracy and reliability.
+
+-   Further exploration is warranted to improve the accuracy of predicting specific purchase amounts.
+    This may involve feature engineering, data augmentation, or alternative modeling techniques.
+
+# Introduction
+
+## Row {data-height="600"}
+
+### Business Problem
+
+This project focuses on leveraging predictive analytics to address critical business challenges in optimizing sales strategies and enhancing customer targeting.
+By analyzing the Catalog Sales dataset, we aim to develop predictive models that forecast customer purchasing behavior and identify influential factors such as residential status and web orders on sales.
+These insights will empower businesses to make informed decisions, allocate resources effectively, and tailor marketing efforts to target potential buyers more efficiently, ultimately driving revenue growth and improving overall performance.
+
+##### Business Questions:
+
+The project seeks to answer the following business questions:
+
+1.  Can predictive models accurately forecast whether a customer will make a purchase?
+
+2.  How does residential status influence the likelihood of customer purchases?
+
+3.  What is the impact of web orders on the amount spent by customers?
+
+### The Data
+
+The Catalog Sales dataset comprises 2000 records and 9 variables, providing comprehensive insights into customer demographics and purchasing behavior.
+
+Target Variables:
+
+-   purchase_yn: Binary variable indicating if a purchase was made (1 for Yes, 0 for No).
+
+-   purchase_amt: Quantitative variable representing the purchase amount.
+
+Predictors:
+
+-   us_yn: Binary variable indicating if the customer is from the US (1 for Yes, 0 for No).
+
+-   freq: Number of transactions in the preceding year.
+
+-   last_update_days_ago: Number of days since the last update to the customer record.
+
+-   first_update_days_ago: Number of days since the first update to the customer record.
+
+-   web_order: Binary variable denoting whether the purchase was made through a web order (1 for Yes, 0 for No).
+
+-   gender_male: Binary variable indicating the gender of the customer (1 for Male, 0 for Female).
+
+-   address_is_res_yn: Binary variable denoting if the address is residential (1 for Yes, 0 for No).
+
+**Data Source:** Unknown
+
+# Data
+
+## Row {data-height="300"}
+
+### Data
+
+Here's a sneak peek into the dataset
+
+```{r}
+head(df_CS) %>% 
+  kable(align = c("r", "r", "r", "r", "r"))
+```
+
+## Col {data-height="500"}
+
+### Data Summary
+
+The summary table offers a comprehensive overview of the dataset's variables, providing insights into their respective ranges.
+
+```{r, cache=TRUE}
+#View data
+summary(df_CS)
+```
+
+### Data Summary Insights
+
+Let's look at our target variables first.
+
+-   The "purchase_yn" variable has 1000 instances where a purchase was made, and 1000 instances where it was not, indicating a balanced distribution.
+
+-   The "purchase_amt" ranges from 0 to 134.73, with a mean of 42.27 and a median of 18.68.
+    The 0 value may be a concern and needs to be analysed further.
+
+Now let's see what we can learn about our predictors from this summary.
+
+-   The dataset has 1649 from the US, and 351 customers from outside US.
+
+-   The "freq" variable tells us that the minimum number of transactions in the preceding year is 0, and the maximum is 15.
+    The median number of transactions is 1, indicating that half of the customers made only one transaction in the preceding year.
+
+-   The "last_update_days_ago" and "first_update_days_ago" have a minimum value of 1, suggesting the data has some recent interactions.
+
+-   852 purchases were made through a web order, and 1148 purchases were not a webvorder.
+    This indicates that web orders are slightly less frequent compared to other purchase methods.
+
+-   The gender column statistics reveal that the dataset has 1049 male customers, and 951 female customers.
+    This suggests a relatively balanced distribution of gender in the dataset.
+
+-   There are 442 instances where the address is residential, and 1558 instances where it is not.
+    This suggests that a majority of customers were non-residential.
+
+# Distribution of Target Variables {data-navmenu="Exploratory Data Analysis"}
+
+## Row {data-height="600"}
+
+### Distribution of Continuous Target Variable - purchase_amt
+
+The distribution of "purchase_amt" , appears to be pretty normally distributed except for the 0 values in this column.
+We will have to think of a way to address this issue.
+
+```{r, fig.height= 4, echo=FALSE}
+#Histogram of purchase_amt 
+ggplot(df_CS, aes(x = purchase_amt)) +
+  geom_histogram(binwidth = 10, fill = "#6e0000", color = "black") +
+  labs(x = "Purchase Amount",
+       y = "Frequency")
+```
+
+
+### Distribution of Categorical Target Variable - purchase_yn
+
+In our Summary we saw that the categorical target variable (purchase_yn) is equally distributed and this is visually representated in this barplot.
+
+```{r, fig.height= 4, echo=FALSE}
+# Barplot of purchase_yn
+ggplot(df_CS, aes(x = purchase_yn)) +
+  geom_bar(fill = "#6e0000", color = "black") +
+  labs(x = "Purchase Status", y = "Frequency")
+```
+
+
+# Correlation Matrix {data-navmenu="Exploratory Data Analysis"}
+
+## Row {data-height="600"}
+
+### Correlation Matrix
+
+```{r }
+numerical_data <- select_if(df_CS, is.numeric)
+correlation_matrix <- cor(numerical_data)
+#correlation plot
+ggcorrplot(correlation_matrix, 
+           type = "lower", 
+           lab = TRUE, 
+           lab_size = 3, 
+           method = "square",  # or method = "circle"
+           colors = c("maroon", "white", "maroon"))
+```
+
+### Summary
+
+We observe a strong correlation of 0.81 between "first_update_days_ago" and "last_update_days_ago." This indicates that updates typically happen in close succession, with shorter intervals between the first and last updates.
+It's essential to take note of this observation as it may impact our models.
+
+# Quantitative Predictors {data-navmenu="Exploratory Data Analysis"}
+
+## Row {.tabset data-height="500," data-width="450"}
+
+### Distribution of last_update_days_ago
+
+```{r}
+#Histogram of last_update_days_ago 
+ggplot(df_CS, aes(x = last_update_days_ago )) +
+  geom_histogram(binwidth = 400, fill = "#6e0000", color = "black") +
+  labs(x = "last_update_days_ago",
+       y = "Frequency")
+```
+
+### Distribution of first_update_days_ago
+
+```{r}
+#Histogram of first_update_days_ago 
+ggplot(df_CS, aes(x = first_update_days_ago )) +
+  geom_histogram(binwidth = 400, fill = "#6e0000", color = "black") +
+  labs(x = "first_update_days_ago",
+       y = "Frequency")
+```
+
+### Distribution of freq
+
+```{r}
+#Histogram of first_update_days_ago 
+ggplot(df_CS, aes(x = freq )) +
+  geom_histogram(binwidth = 1,  fill = "#6e0000", color = "black") +
+  labs(x = "freq",
+       y = "Frequency")
+```
+
+# Quanlitative Predictors {data-navmenu="Exploratory Data Analysis"}
+
+## Row {.tabset data-height="500," data-width="450"}
+
+### Distribution of us_yn
+
+```{r}
+# Barplot of us_yn
+ggplot(df_CS, aes(x = us_yn)) +
+  geom_bar(fill = "#6e0000", color = "black") +
+  labs(x = "us_yn", y = "Frequency")
+```
+
+### Distribution of web_order
+
+```{r}
+# Barplot of web_order
+ggplot(df_CS, aes(x = us_yn)) +
+  geom_bar(fill = "#6e0000", color = "black") +
+  labs(x = "web_order", y = "Frequency")
+```
+
+### Distribution of gender_male
+
+```{r}
+# Barplot of gender_male
+ggplot(df_CS, aes(x = gender_male)) +
+  geom_bar(fill = "#6e0000", color = "black") +
+  labs(x = "gender_male", y = "Frequency")
+```
+
+### Distribution of address_is_res_yn
+
+```{r}
+# Barplot of address_is_res_yn
+ggplot(df_CS, aes(x = address_is_res_yn)) +
+  geom_bar(fill = "#6e0000", color = "black") +
+  labs(x = "address_is_res_yn", y = "Frequency")
+```
+
+# Initial Models {data-orientation="rows"}
+
+### Predicting Continuous Variable - purchase_amt
+
+```{r}
+reg_spec <- linear_reg() %>% ## Class of problem  
+   set_engine("lm") %>% ## The particular function that we use  
+   set_mode("regression") ## type of model
+
+#Fit the model
+reg_fit <- reg_spec %>%  
+   fit(purchase_amt ~ .-purchase_yn ,data = df_CS) #add the continuous target, remove the categorical
+
+#Capture the predictions and metrics
+pred_reg_fit <- augment(reg_fit, df_CS)
+
+tidy(reg_fit$fit) %>%
+  kable(digits=3)
+
+pred_reg_fit %>%
+   metrics(truth=purchase_amt,estimate=.pred) %>%
+   select(-.estimator) %>%
+   kable(digits=3, align = 'l')
+
+curr_metrics <- pred_reg_fit %>%
+   metrics(truth=purchase_amt,estimate=.pred) %>%
+   select(-.estimator)
+
+results_reg <- tibble(model = 'Regression',
+                             rmse = curr_metrics[[1,2]],
+                              rsq=curr_metrics[[2,2]],
+                             mae = curr_metrics[[3,2]])
+              
+```
+
+The model output indicates that predictors, freq, web_order1, and address_is_res_yn1 are statistically significant with p-values less than 0.05.
+The R-squared value of 0.282 suggests that approximately 28.2% of the variance in purchase amounts can be explained by the predictors.
+
+### Predicting Categorical Variable - purchase_yn
+
+```{r}
+
+# Make a dataset for classification
+df_class <- df_CS %>%
+  select(-purchase_amt) %>% 
+   mutate(purchase_yn = factor(purchase_yn, levels = c("1", "0")))
+  
+
+#Define the model specification
+log_spec <- logistic_reg() %>%
+             set_engine('glm') %>%
+             set_mode('classification') 
+
+#Fit the model
+log_fit <- log_spec %>%
+              fit(purchase_yn ~ .,data = df_class)
+
+#Capture the predictions and metrics
+my_class_metrics <- metric_set(yardstick::accuracy, yardstick::specificity, yardstick::sensitivity)
+
+#predictions
+pred_log_fit <- augment(log_fit, df_class)
+
+#model
+tidy(log_fit$fit) %>%
+  kable(digits=3)
+
+#metrics
+pred_log_fit %>%
+    my_class_metrics(truth=purchase_yn,estimate=.pred_class) %>%
+    select(-.estimator) %>%
+    kable(digits = 3, align = 'l')
+```
+
+The model output indicates that predictors, freq, web_order1, and address_is_res_yn1 are statistically significant with p-values less than 0.05.
+The model's accuracy stands at 76.2%.
+When it comes to spotting cases where someone did make a purchase (sensitivity), it correctly identified them about 76.4% of the time.
+And for cases where someone didn't make a purchase (specificity), it identified those correctly about 76.0% of the time.
+
+```{r}
+#Capture the auc 
+roc_auc_initial <- pred_log_fit %>%
+                 roc_auc(truth = purchase_yn, .pred_1) %>%
+                 pull(.estimate)
+
+class_initial_metrics <- pred_log_fit %>%
+                    my_class_metrics(truth=purchase_yn,estimate=.pred_class)%>%
+                    select(-.estimator)
+
+
+results_initial_tree <-tibble(model="Initial Logistic Model",
+                accuracy=class_initial_metrics[[1,2]],
+                sensitivity=class_initial_metrics[[3,2]],
+                specificity=class_initial_metrics[[2,2]],
+                error = 1-accuracy,
+                roc_auc = round(roc_auc_initial,3))
+
+
+
+```
+
+# Model 1 - Mutiple Regression {data-navmenu="Continuous Target Models"}
+
+## Row
+
+### Pruned Regression Model
+
+The initial regression model underwent a pruning process to retain only significant predictors with p-values greater than 0.05.
+The variables gender_male, us_yn, first_update_days_ago, and last_update_days_ago were removed during this process.
+The resulting model includes only predictors that have a statistically significant relationship with the target variable - purchase_amt.
+
+```{r}
+# Pruned purchase_yn and gender_male
+
+# Filter out rows where purchase amount is not 0 and purchase_yn which is the categorical target variable
+# df_purchase_amt <- df_CS %>%
+#   filter(purchase_amt != 0) %>% 
+#   select(-purchase_yn)
+
+# Fit the new model
+reg_fit_pruned1 <- reg_spec %>% 
+  fit(purchase_amt ~ . - purchase_yn - gender_male, data = df_CS)
+
+#tidy(reg_fit_pruned1$fit) %>%
+#  kable(digits=3)
+
+```
+
+```{r}
+# Pruned purchase_yn and gender_male and us_yn
+
+# Fit the new model
+reg_fit_pruned2 <- reg_spec %>% 
+  fit(purchase_amt ~ . - purchase_yn -gender_male -us_yn, data = df_CS)
+
+#tidy(reg_fit_pruned2$fit) %>%
+#  kable(digits=3)
+```
+
+```{r}
+# Pruned purchase_yn and gender_male and us_yn and first_update_days_ago	
+
+reg_fit_pruned3 <- reg_spec %>% 
+  fit(purchase_amt ~ . - purchase_yn -gender_male -us_yn -first_update_days_ago	, data = df_CS)
+
+# tidy(reg_fit_pruned3$fit) %>%
+#   kable(digits=3)
+```
+
+```{r}
+#Pruned - purchase_yn  -gender_male -us_yn -first_update_days_ago -last_update_days_ago
+
+reg_fit_pruned4 <- reg_spec %>% 
+  fit(purchase_amt ~ . - purchase_yn -gender_male -us_yn -first_update_days_ago -last_update_days_ago	, data = df_CS)
+
+tidy(reg_fit_pruned4$fit) %>%
+  kable(digits=3)
+
+#Capture the predictions and metrics
+ pred_reg_pruned_fit <- augment(reg_fit, df_CS)
+ 
+pred_reg_pruned_fit %>%
+   metrics(truth=purchase_amt,estimate=.pred) %>%
+   select(-.estimator)%>%
+   kable(digits=3, align = 'l')
+
+```
+
+##### Actual Vs. Predicted Plot
+
+```{r }
+#Plot the Actual Versus Predicted Values
+p <- ggplot(data = pred_reg_pruned_fit,
+            aes(x = .pred, y = purchase_amt)) + 
+  geom_point(col = "#6e0000") +
+  geom_abline(col="gold")
+
+AvP_pruned_reg <- ggplotly(p)
+AvP_pruned_reg
+```
+
+### Model Interpretation:
+
+The R-squared value is approximately **0.28**.
+This indicates that the model explains only about **28%** of the variance in the purchase amounts.
+
+**Coefficient Interpretation**:
+
+-   **Intercept (Constant)**:
+    -   The intercept value is **16.266**.
+    -   When all other variables are zero, the expected purchase amount is **16.266**.
+-   **Frequency ('freq')**:
+    -   For every unit increase in the 'freq' variable (number of transactions), the expected purchase amount increases by approximately **15.502** units.
+-   **Web Order Indicator ('web_order1')**:
+    -   If a purchase is made through a web order (indicated by 'web_order1' being 1), the expected purchase amount increases by approximately **13.099** units.
+-   **Address Is Residential Indicator ('address_is_res_yn1')**:
+    -   If the address is residential (indicated by 'address_is_res_yn1' being 1), the expected purchase amount decreases by approximately **6.993** units.
+
+**Actual vs. Predicted Graph**:
+
+-   The scatter plot shows how well the model's predictions align with actual purchase amounts.
+-   The fact that points deviate from the diagonal suggests that the model's predictions are not highly accurate.
+-   The low R-squared value further confirms that the model's performance is limited.
+
+In summary, while the model provides some insights, there's room for improvement.
+Consider exploring additional features or refining the model to enhance its predictive accuracy.
+
+# Model 2 - Regression Tree {data-navmenu="Continuous Target Models"}
+
+## Row {data-height="500," data-width="300"}
+
+```{r}
+# For this model we will use only those records where purchase_amt > 0
+df_filteredout_0 <- df_CS %>%
+  filter(purchase_amt != 0) %>% 
+  select(-purchase_yn)
+
+#Split the data into a 65% training set and a test set. Use a seed of 333. 
+set.seed(333)
+cs_split <- initial_split(df_filteredout_0, prop = .60)
+cs_train <- rsample::training(cs_split)
+cs_test <- rsample::testing(cs_split)
+```
+
+```{r}
+#Define the model specification
+tree_reg_spec <- decision_tree() %>%
+                    set_engine("rpart") %>%
+                    set_mode("regression")
+#Fit the model
+
+tree_reg_fit <- tree_reg_spec %>%
+                  fit(purchase_amt ~ ., data = cs_train)
+
+#Predict
+pred_tree_reg_fit <- tree_reg_fit %>% 
+  augment(cs_test)
+
+```
+
+### Regression Tree plot
+
+```{r}
+rpart.plot(tree_reg_fit$fit, roundint=FALSE)
+```
+
+### Variable Importance
+
+```{r}
+tree_reg_fit %>% 
+ vip(aesthetics = list(fill = "#6e0000", col = "black"))
+```
+
+## Row {data-height= "300"}
+
+### Model Metrics
+
+```{r}
+my_reg_metrics <- metric_set(yardstick::rmse, yardstick::mae, yardstick::rsq) 
+
+curr_metrics <- pred_tree_reg_fit %>%
+  my_reg_metrics(truth = purchase_amt, estimate = .pred) %>%
+  select(-.estimator) 
+
+#create a results table
+results1 <-tibble(model="Regression Tree",
+                rmse=curr_metrics[[1,2]],
+                mae=curr_metrics[[2,2]],
+                rsq=curr_metrics[[3,2]])
+results1 %>%
+  kable(digits=2)
+```
+
+##### Actual Vs. Predicted Plot
+
+```{r}
+
+#Plot the Actual Versus Predicted Values
+p <- ggplot(data = pred_tree_reg_fit,
+            aes(x = .pred, y = purchase_amt)) + 
+  geom_point(col = "#6e0000") +
+  geom_abline(col="gold")
+
+Avp_tree <- ggplotly(p)
+Avp_tree
+```
+
+### Model Interpretation
+
+Note: For the Regression Tree Model all the rows with purchase_amt = 0 were filtered out.
+
+The model identified the following variables as its top predictors
+
+1.  last_update_days_ago
+
+2.  first_update_days_ago
+
+3.  freq
+
+4.  web_order
+
+5.  us_yn
+
+The RMSE value of 12.7 indicates that, on average, the model's predictions are off by approximately 12.7 units.
+
+The MAE value of 10.04 signifies the average absolute difference between the predicted and actual values.
+
+The R-squared value of 0.11 suggests that the model explains around 11% of the variance in the target variable, indicating modest predictive power.
+
+# Model 3 - Ridge Regression {data-navmenu="Continuous Target Models"}
+
+## Row {data-height="500," data-width="300"}
+
+### Ridge Regression
+
+For Ridge regression analysis, we filtered the dataset to include only rows where the purchase_amt was greater than 0 and normalized the data.
+The analysis identified the above significant predictors.
+
+```{r}
+# For this model we will use only those records where purchase_amt > 0
+# Let's try normalizing the data
+cs_recipe <- recipe(purchase_amt ~ ., data = df_filteredout_0) %>% 
+  step_dummy(all_nominal_predictors()) %>% # making dummy for all categorical
+  step_normalize(all_predictors()) %>% # normalizing target and predictors. We can make a selection for only predictors 
+  prep()
+
+cs_norm <- bake(cs_recipe, df_filteredout_0) #credit_norm because this df is normalised
+
+#performing test/train - for normalised data - 60/40
+set.seed(42)
+cs_split_norm <- initial_split(cs_norm, prop = .60)
+cs_train_norm <- rsample::training(cs_split_norm)
+cs_test_norm <- rsample::testing(cs_split_norm)
+```
+
+```{r}
+#Define Model Specifications
+rr_spec <- linear_reg(penalty = 80, # adding a penalty
+                      mixture = 0) %>% 
+          set_engine("glmnet") %>% 
+          set_mode("regression") 
+
+rr_fit <- rr_spec %>%
+                    fit(purchase_amt ~ ., cs_train_norm)
+
+#Predict
+pred_rr <- rr_fit %>% 
+  augment(cs_test_norm)
+
+```
+
+###### Variable Importance
+
+```{r, fig.width= 4, fig.height= 4, echo=FALSE}
+rr_fit %>% 
+  vip(aesthetics = list(fill = "#6e0000", col = "black"))
+```
+
+### Actual Vs. Predicted Plot
+
+```{r, fig.height= 3, echo=FALSE}
+
+#Plot the Actual Versus Predicted Values
+p <- ggplot(data = pred_rr,
+            aes(x = .pred, y = purchase_amt)) + 
+  geom_point(col = "#6e0000") +
+  geom_abline(col="gold")
+
+Avp_rr <- ggplotly(p)
+Avp_rr
+
+```
+
+### Metrics and Model Interpretation
+
+```{r}
+curr_metrics <- pred_rr %>%
+  my_reg_metrics(truth = purchase_amt, estimate = .pred) %>% 
+  select(-.estimator	)
+
+curr_metrics %>% 
+  kable(digits = 3)
+```
+
+For the Ridge regression model as well, the R-squared value of approximately 0.15 suggests that the model has limited capability in explaining the variability in its predictors.
+
+The top Predictors for this model were as follows
+
+1.  last_update_days_ago
+
+2.  web_order_X1
+
+3.  freq
+
+4.  first_update_days_ago
+
+5.  address_is_res_yn_X1
+
+# Conclusion {data-navmenu="Continuous Target Models"}
+
+## Row {data-height="700"}
+
+### Final Result Table
+
+```{r}
+#create a results table
+
+all_results <- tibble(model = c('Initial Regression Model','Pruned Regression Model', 'Regression Tree Model', 'Ridge Regression'),
+      rsq=c(0.282,0.282,0.110, 0.146),
+      mae=c(32.94,32.94, 10.04,10.94),
+      rmse=c(36.73,36.73, 12.70,13.77))
+
+all_results %>%
+  kable()
+```
+
+```{r}
+# reg <- pred_reg_pruned_fit %>%
+#   mutate(Model="Pruned Regression Model")
+# 
+# tree <- pred_tree_reg_fit %>%
+#   mutate (Model="Regression Tree Model")
+# 
+# rr <- pred_rr %>%
+#   mutate(Model = "Ridge Regression")
+# 
+# combine <- bind_rows(reg, tree, rr)
+# 
+# 
+# p <- combine %>%
+#   ggplot(aes(y = purchase_amt, x = .pred)) + 
+#       geom_point(col = "#6e0000") +
+#       geom_abline(col="gold") + 
+#       ggtitle("Faceted By Model Type")+
+#       facet_wrap(~Model)
+# 
+# avp_combine <- ggplotly(p)
+# avp_combine
+```
+
+##### Model Comparison
+
+```{r}
+
+# Calculate residuals for each model
+reg_res <- pred_reg_pruned_fit %>%
+  mutate(Model = "Pruned Regression Model") %>%
+  mutate(residuals = purchase_amt - .pred)
+
+tree_res <- pred_tree_reg_fit %>%
+  mutate(Model = "Regression Tree Model") %>%
+  mutate(residuals = purchase_amt - .pred)
+
+rr_res <- pred_rr %>%
+  mutate(Model = "Ridge Regression") %>%
+  mutate(residuals = purchase_amt - .pred)
+
+# Combine residuals data for all models
+combine_res <- bind_rows(reg_res, tree_res, rr_res)
+
+# Plot actual versus predicted values faceted by model type
+p1 <- combine_res %>%
+  ggplot(aes(y = purchase_amt, x = .pred)) + 
+  geom_point(col = "#6e0000") +
+  geom_abline(col = "gold") + 
+  ggtitle("Actual vs. Predicted Values Faceted By Model Type") +
+  facet_wrap(~Model)
+
+# Plot histograms of residuals faceted by model type
+p2 <- combine_res %>%
+  ggplot(aes(x = residuals)) +
+  geom_density(fill = "#6e0000", col = "black", alpha = 0.5) +
+  labs(x = "Residuals", y = "Density") +
+  ggtitle("Distribution of Residuals Faceted By Model Type") +
+  facet_wrap(~Model)
+
+# Combine both plots into one facetted plot
+combined_plot <- plot_grid(p1, p2, nrow = 2)
+
+# Display the combined plot
+combined_plot
+
+```
+
+### Conclusion
+
+In the process of building these models, different approaches were taken.
+For the Initial Regression Model and Pruned Regression Model, records where purchase_amt = 0 were included in the model.
+However, for the Regression Tree Model and Ridge Regression, these records were removed.
+Additionally, the dataset was normalized for the Ridge Regression model.
+
+**Performance Metrics:**
+
+-   R-squared (rsq) value: Initial Regression Model and Pruned Regression Model both had rsq = 0.281.
+
+-   Regression Tree Model: Demonstrated lowest Mean Absolute Error (MAE) of 10.04 and Root Mean Squared Error (RMSE) of 12.70.
+
+**Actual vs. predicted Plots and Residuals:**
+
+-   Regression Tree Model showed a tighter cluster of points around the diagonal, indicating better predictions.
+
+-   Residuals of the Regression Tree Model were more concentrated around zero, suggesting lower error variance and predictions closer to actual values.
+
+**Final thoughts:**
+
+-   Regression Tree Model emerges as the best choice based on MAE and RMSE.
+
+-   Pruned Regression Model, with its higher R-squared value and simpler interpretability, could also be a viable choice.
+
+-   All models have room for improvement.
+
+-   Upon reflection, it appears that the ideal approach was to remove the records with purchase_amt = 0, while normalization might not have been necessary.
+    Given more time, an interesting avenue for exploration would be to prune the regression model without the zero values.
+
+# Model 1 - Logistic Regression {data-navmenu="Categorical Target Models"}
+
+## Row
+
+### Pruned Logistic Model
+
+The initial logistic model underwent a pruning process to retain only significant predictors with p-values greater than 0.05.
+The variables gender_male, us_yn, first_update_days_ago, and last_update_days_ago were removed during this process.
+The resulting model includes only predictors that have a statistically significant relationship with the target variable - purchase_yn
+
+```{r}
+#Pruned -purchase_amt -us_yn1 
+
+#Fit the model
+log_fit_pruned1 <- log_spec %>%
+              fit(purchase_yn ~ . -us_yn ,data = df_class)
+
+
+
+#model
+#tidy(log_fit_pruned1$fit) %>%
+# kable(digits=3)
+
+```
+
+```{r}
+#Pruned -purchase_amt -us_yn1 -gender_male
+
+#Fit the model
+log_fit_pruned2 <- log_spec %>%
+              fit(purchase_yn ~ .-us_yn -gender_male ,data = df_class)
+
+#predictions
+pred_log_fit_pruned2 <- augment(log_fit_pruned2, df_class)
+
+#model
+#tidy(log_fit_pruned2$fit) %>%
+#  kable(digits=3)
+
+```
+
+```{r}
+#Pruned -purchase_amt -us_yn1 -gender_male -last_update_days_ago
+
+#Fit the model
+log_fit_pruned3 <- log_spec %>%
+              fit(purchase_yn ~ .-us_yn -gender_male -last_update_days_ago ,data = df_class)
+
+
+#model
+#tidy(log_fit_pruned3$fit) %>%
+#  kable(digits=3)
+```
+
+```{r}
+#Pruned -purchase_amt -us_yn1 -gender_male -last_update_days_ago -first_update_days_ago	
+
+#Fit the model
+log_fit_pruned4 <- log_spec %>%
+              fit(purchase_yn ~ . -us_yn -gender_male -last_update_days_ago -first_update_days_ago	 ,data = df_class)
+
+#predictions
+pred_log_fit_pruned4 <- augment(log_fit_pruned4, df_class)
+
+#model
+tidy(log_fit_pruned4$fit) %>%
+  kable(digits=3)
+
+#Capture the auc 
+roc_auc <- pred_log_fit_pruned4 %>%
+                 roc_auc(truth = purchase_yn, .pred_1) %>%
+                 pull(.estimate)
+
+pruned_metrics <- pred_log_fit_pruned4 %>%
+  my_class_metrics(truth=purchase_yn, estimate = .pred_class)%>%
+  select(-.estimator)
+
+
+results_pruned_log <-tibble(model="Pruned Logistic Model",
+                accuracy=pruned_metrics[[1,2]],
+                sensitivity=pruned_metrics[[3,2]],
+                specificity=pruned_metrics[[2,2]],
+                error = 1 - accuracy,
+                roc_auc = round(roc_auc,3))
+
+results_pruned_log %>%
+  kable(digits=3)
+```
+
+##### ROC-AUC Curve
+
+```{r}
+
+#Capture the thresholds and sens/spec
+df_roc_auc_pruned_log <- 
+#df_loan_roc <- bind_rows(df_loan_roc,  #use if df_loan_roc exists with other models
+               pred_log_fit_pruned4 %>% 
+                roc_curve(truth = purchase_yn, .pred_1) %>% 
+                  mutate(model = paste('Pruned Log Model roc_auc',round(roc_auc,2)))
+#)
+#Plot the ROC Curve(s) 
+ggplot(df_roc_auc_pruned_log, 
+        aes(x = 1 - specificity, y = sensitivity, 
+            group = model, col = model)) +
+        geom_path() +
+        geom_abline(lty = 3)  +
+        scale_color_brewer(palette = "Dark2") +
+        theme(legend.position = "top") 
+```
+
+##### Confusion Matrix
+
+```{r}
+pred_log_fit_pruned4 <- log_fit_pruned4%>%
+  augment(df_class) 
+
+pred_log_fit_pruned4 %>% 
+  conf_mat(truth=purchase_yn, estimate=.pred_class)
+```
+
+### ROC threshold - Revised Cutoff
+
+```{r}
+set.seed(123)
+ROC_threshold <- function(pred_data,truth,probs) {
+  #This function finds the cutoff with the max sum of sensitivity and specificity
+  #Created tidy version of:
+  #http://scipp.ucsc.edu/~pablo/pulsarness/Step_02_ROC_and_Table_function.html
+  #The inputs are the prediction table (from augment()) and the columns for the
+  #truth and probability values. The columns need to be strings (i.e., 'sales')
+ 
+  roc_curve_tbl <- pred_data %>% 
+                    roc_curve(truth = {{truth}}, {{probs}}) 
+  auc = pred_data %>%
+              roc_auc(truth = {{truth}}, {{probs}}) %>%
+              pull(.estimate)
+  best_row = which.max(roc_curve_tbl$specificity + roc_curve_tbl$sensitivity)
+  print(paste("Best Cutoff", round(roc_curve_tbl[best_row,'.threshold'],4),
+              "Sensitivity", round(roc_curve_tbl[best_row,'sensitivity'],4),
+              "Specificity", round(roc_curve_tbl[best_row,'specificity'],4),
+              "AUC for Model", round(auc,4)))
+}
+ROC_threshold(pred_log_fit_pruned4, 'purchase_yn', '.pred_1')
+```
+
+##### Confusion Matrix with Revised Cutoff
+
+```{r}
+#Let's see if revising the cutoff will make much difference
+pred_log_fit_pruned4 <- pred_log_fit_pruned4 %>%
+  mutate(pred_0.5981  = factor(ifelse(.pred_1> 0.5981, "1", "0"),
+                              levels=c("1", "0")))
+
+#Confusion matrix
+pred_log_fit_pruned4 %>% 
+  conf_mat(truth=purchase_yn,estimate=pred_0.5981)
+```
+
+```{r}
+results_pruned_log_revised <- pred_log_fit_pruned4 %>% 
+    my_class_metrics(truth = purchase_yn, estimate = pred_0.5981) %>%
+    dplyr::select(-.estimator)
+
+results_pruned_log_rev <-tibble(model="Pruned Logistic Model Revised Cutoff 0.5981 ",
+                  accuracy=results_pruned_log_revised[[1,2]],
+                  sensitivity=results_pruned_log_revised[[3,2]],
+                  specificity=results_pruned_log_revised[[2,2]],
+                  error = 1-accuracy,
+                  roc_auc = round(roc_auc,3))
+
+
+results_pruned_log_rev%>%
+  kable(digits=3)
+```
+
+###### **Model Interpretation:**
+
+The pruned model includes the following statistically significant predictors:
+
+-   freq: The number of transactions in the preceding year.
+
+-   web_order1: A binary variable indicating whether the purchase was made through a web order (1 for Yes, 0 for No).
+
+-   address_is_res_yn1: A binary variable denoting if the address is residential (1 for Yes, 0 for No).
+
+**Coefficients:**
+
+-   Intercept: The intercept term represents the log-odds of the response variable (purchase_yn) when all other predictors are zero.
+    In this case, the intercept is approximately -2.589.
+
+-   freq: For each additional transaction in the preceding year, the log-odds of making a purchase increase by approximately 2.018 units.
+
+-   web_order1: Customers who made a web order (web_order = 1) have a log-odds of making a purchase approximately 0.968 higher than those who did not make a web order.
+
+-   address_is_res_yn1: Customers with a residential address (address_is_res_yn = 1) have a log-odds of making a purchase approximately 1.410 lower than those without a residential address.
+
+**AUC for this model:** 0.85\
+\
+**Summary:**
+
+We tried the ROC threshold function and updated the cutoff to 0.5981.
+
+The revised cutoff has led to changes in both sensitivity and specificity:
+
+Sensitivity (True Positive Rate) decreased from 0.772 to 0.506.
+
+Specificity (True Negative Rate) increased from 0.721 to 0.935.
+
+The overall accuracy decreased slightly from 0.747 to 0.721.
+
+The error rate increased from 0.253 to 0.279.
+
+In summary, the revised cutoff prioritizes specificity (reducing false positives) at the expense of sensitivity (increasing false negatives).
+Depending on the specific context and business requirements, this trade-off may be acceptable or require further adjustments.
+
+# Model 2 - Tuned Random Forest Model {data-navmenu="Categorical Target Models"}
+
+## Row {data-height="500," data-width="450"}
+
+### Tuned Random Forest Model Fit
+
+```{r ,cache=TRUE}
+#Spliting dataset into testing and training sets
+set.seed(157)
+class_split <- initial_split(df_class, prop = .60,strata="purchase_yn") 
+class_train <- rsample::training(class_split) 
+class_test <- rsample::testing(class_split)
+
+#Tuning
+set.seed(234)
+cs_folds <- vfold_cv(class_train,v=5)
+
+rf_grid <- expand_grid(mtry = 2:6, 
+                       trees = c(100, 200))
+
+#Define the Model Specification
+rf_tune_spec <- rand_forest(mtry = tune(), 
+                            trees = tune()) %>%
+                  set_engine("ranger", 
+                             importance = "impurity") %>% 
+                  set_mode("classification") 
+
+#Define our workflow
+cs_wf <- workflow() %>%
+                  add_model(rf_tune_spec) %>%
+                  add_formula(purchase_yn ~ .)
+
+#Tune on the grid of values
+cs_rs <- cs_wf %>% 
+                    tune_grid(resamples = cs_folds,
+                              grid = rf_grid)
+
+# show_best(cs_rs) %>%
+#   kable()
+```
+
+```{r,  cache=TRUE}
+#final workflow
+final_tree_wf <- cs_wf %>% 
+                      finalize_workflow(select_best(cs_rs))
+
+
+set.seed(1982)
+final_rf_fit <- final_tree_wf %>%
+                      fit(data = class_test) 
+final_rf_fit
+```
+
+### Variable Importance
+
+```{r}
+#variable importance plot
+final_rf_fit %>% 
+  extract_fit_parsnip() %>% 
+  vip(aesthetics = list(fill = "#6e0000", col = "black"))
+```
+
+## Row {data-height= "300"}
+
+### Confusion Matrix
+
+```{r}
+
+#Confusion matrix
+pred_rf <- final_rf_fit %>% 
+                          augment(class_test) 
+pred_rf %>% 
+  conf_mat(truth=purchase_yn,estimate=.pred_class)
+```
+
+##### Tuned Random Forest Metrics
+
+```{r}
+#Capture the auc 
+roc_auc_rf <- pred_rf %>%
+                 roc_auc(truth = purchase_yn, .pred_1) %>%
+                 pull(.estimate)
+
+class_rf_metrics <- pred_rf %>%
+                    my_class_metrics(truth=purchase_yn,estimate=.pred_class)%>%
+                    select(-.estimator)
+
+
+results_rf_tree <-tibble(model="Tuned Random Forest Model",
+                accuracy=class_rf_metrics[[1,2]],
+                sensitivity=class_rf_metrics[[3,2]],
+                specificity=class_rf_metrics[[2,2]],
+                error = 1-accuracy,
+                roc_auc = round(roc_auc_rf,3))
+
+results_rf_tree %>%
+  kable(digits=3)
+```
+
+### Model Interpretation
+
+The selected random forest model was tuned with the following parameters:
+
+-   mtry: 4
+
+-   Number of trees: 100
+
+The options provided for tuning were:
+
+-   mtry: 2, 3, 4, 5, 6
+
+-   Number of trees: 100, 200
+
+Overall Insights:
+
+-   The model's overall accuracy in predicting both classes is 94.1%.
+
+-   The model correctly identifies 94.5% of the actual positive cases.
+
+-   The model correctly identifies 93.8% of the actual negative cases.
+
+-   The misclassification rate of the model is 5.9%.
+
+-   The area under the ROC curve, which measures the model's ability to distinguish between classes, is 98.9%.
+
+# Model 3 - Tuned Decision Tree {data-navmenu="Categorical Target Models"}
+
+## Row {.tabset data-height="500," data-width="450"}
+
+### Tuned Decision Tree Workflow
+
+```{r}
+#Define Model Specifications
+
+class_tree_tune_spec <- decision_tree(cost_complexity = tune(),
+                         tree_depth = tune(),
+                         min_n = 40) %>% 
+                    set_engine("rpart") %>% 
+                    set_mode("classification")
+
+#Define the CV folds and grid parameters
+set.seed(1982)
+#We will use the folds defined earlier 
+cs_grid2 <- grid_regular(cost_complexity(),
+                           tree_depth(range = c(2, 10)),
+                           #min_n(range = c(40, 40)),
+                           levels = 5)
+
+
+#Define our workflow
+class_tree_class_wf <- workflow() %>%
+  add_formula(purchase_yn ~ .) %>% 
+  add_model(class_tree_tune_spec)
+
+#Tune on the grid of values
+tree_class_rs <- class_tree_class_wf %>% 
+  tune_grid(resamples = cs_folds,
+            grid = cs_grid2)
+
+# Finalize the workflow using the best tree
+final_tree_class_wf <- 
+  class_tree_class_wf %>% 
+  finalize_workflow(select_best(tree_class_rs, metric = "accuracy"))
+final_tree_class_wf
+
+final_class_tree_fit <- final_tree_class_wf %>%
+  fit(data = class_train) %>%
+  extract_fit_parsnip() 
+
+```
+
+### Tree Plot
+
+```{r}
+rpart.plot(final_class_tree_fit$fit, type=1, extra = 102, roundint=FALSE)
+```
+
+### Variable Importance
+
+```{r}
+#variable importance plot
+final_class_tree_fit %>% 
+  vip(aesthetics = list(fill = "#6e0000", col = "black"))
+```
+
+### Confusion Matrix
+
+```{r}
+
+pred_final_class_tree_fit <- final_class_tree_fit %>%
+                              augment(class_test)
+
+pred_final_class_tree_fit %>%
+        conf_mat(truth=purchase_yn,estimate=.pred_class)
+
+```
+
+## Row {data-height= "300"}
+
+### Metrics
+
+```{r}
+#Capture the auc 
+roc_auc_class <- pred_final_class_tree_fit %>%
+                 roc_auc(truth = purchase_yn, .pred_1) %>%
+                 pull(.estimate)
+
+class_tree_metrics <- pred_final_class_tree_fit %>%
+                    my_class_metrics(truth=purchase_yn,estimate=.pred_class)%>%
+                    select(-.estimator)
+
+
+results_class_tree <-tibble(model="Tuned Decision Tree Model",
+                accuracy=class_tree_metrics[[1,2]],
+                sensitivity=class_tree_metrics[[3,2]],
+                specificity=class_tree_metrics[[2,2]],
+                error = 1-accuracy,
+                roc_auc = round(roc_auc_class,3))
+
+results_class_tree %>%
+  kable(digits=3)
+```
+
+### Model Interpretation
+
+The selected classification decision tree model was tuned with the following parameters:
+
+-   cost_complexity: 0
+
+-   tree_depth: 8
+
+The options provided for tuning were:
+
+-   No option were provided for cost_complexity
+
+-   tree_depth: Anything between 2 to 10
+
+Overall Insights:
+
+-   The model's overall accuracy in predicting both classes is 76.7%.
+
+-   The model correctly identifies 76.5% of the actual positive cases, indicating its sensitivity.
+
+-   The model correctly identifies 77.0% of the actual negative cases, demonstrating its specificity.
+
+-   The misclassification rate of the model is 23.3%.
+
+-   The area under the ROC curve, measuring the model's ability to distinguish between classes, is 86.1%.
+
+# Conclusion {data-navmenu="Categorical Target Models"}
+
+## Row {data-height="700"}
+
+### Final Result Table
+
+```{r}
+class_final_result <- bind_rows(results_initial_tree, results_pruned_log,results_pruned_log_rev,results_rf_tree, results_class_tree)
+
+class_final_result %>% 
+  kable(digits = 3)
+```
+
+##### Compare the ROC curves
+
+```{r}
+
+# # Combine data frames containing ROC curve information for each model
+# combined_roc <- bind_rows(
+#   df_roc_auc_pruned_log %>%
+#     mutate(model = paste('Pruned Logistic Model',round(roc_auc,2))),
+#   pred_rf %>%
+#     roc_curve(truth = purchase_yn, .pred_1) %>%
+#     mutate(model = paste('Tuned Random Forest Model',round(roc_auc_rf,2))),
+#   pred_final_class_tree_fit %>%
+#     roc_curve(truth = purchase_yn, .pred_1) %>%
+#     mutate(model = paste('Tuned Decision Tree Model',round(roc_auc_class,2)))
+# )
+# 
+# # Plot the ROC Curve(s) 
+# ggplot(combined_roc, 
+#        aes(x = 1 - specificity, y = sensitivity, 
+#            group = model, col = model)) +
+#   geom_path() +
+#   geom_abline(lty = 3) +
+#   scale_color_brewer(palette = "Dark2") +
+#   theme(legend.position = "top") +
+#   labs(x = "1 - Specificity",
+#        y = "Sensitivity")
+# 
+# library(ggplot2)
+# library(plotly)
+
+# Combine data frames containing ROC curve information for each model
+combined_roc <- bind_rows(
+  df_roc_auc_pruned_log %>%
+    mutate(model = paste('Pruned Logistic Model',round(roc_auc,2))),
+  pred_rf %>%
+    roc_curve(truth = purchase_yn, .pred_1) %>%
+    mutate(model = paste('Tuned Random Forest Model',round(roc_auc_rf,2))),
+  pred_final_class_tree_fit %>%
+    roc_curve(truth = purchase_yn, .pred_1) %>%
+    mutate(model = paste('Tuned Decision Tree Model',round(roc_auc_class,2)))
+)
+
+# Plot the ROC Curve(s) 
+p <- ggplot(combined_roc, 
+       aes(x = 1 - specificity, y = sensitivity, 
+           group = model, col = model)) +
+  geom_path() +
+  geom_abline(lty = 3) +
+  scale_color_brewer(palette = "Dark2") +
+  theme(legend.position = "top") +
+  labs(x = "1 - Specificity",
+       y = "Sensitivity")
+
+# Convert ggplot to plotly
+p <- ggplotly(p)
+p
+```
+
+### Conclusion
+
+-   For accuracy, the "Tuned Random Forest Model" performs the best with an accuracy of 94.1%.
+
+-   For sensitivity, again, the "Tuned Random Forest Model" outperforms others with a sensitivity of 94.5%.
+
+-   For specificity, again, the "Tuned Random Forest Model" exhibits the highest value of 93.8%.
+
+-   For error rate, the "Tuned Random Forest Model" demonstrates the lowest error rate of 5.9%.
+
+-   For ROC AUC, the "Tuned Random Forest Model" achieves the highest value of 98.9%.
+
+Considering these results, the "Tuned Random Forest Model" stands out as the most suitable choice.
+This model demonstrates high accuracy in classifying both positive and negative cases, low error rate, and excellent discrimination ability as indicated by the ROC AUC score.
+Therefore, we would select the "Tuned Random Forest Model" for its overall robust performance in predicting the target variable.
+
+# Reflection
+
+## Row {data-height="600"}
+
+### What did you work hardest on or are you most proud of in your project?
+
+-   Formatting and presenting the work effectively was a significant challenge.
+
+-   I dedicated considerable effort and time in arranging and organizing the project.
+
+-   I wanted to ensure that most of the graphs are visible at first glance, minimizing the need for excessive scrolling or tab-switching.
+
+-   The goal was to make the dashobaord user friendly.
+
+-   Although I initially struggled with the regression models, I ultimately found success with the classification models.
+
+-   I am proud of the "Tuned Random Forest Model," which achieved an accuracy of 94.1%.
+
+### What would you do if you had another week to work on the project?
+
+-   If given another week to work on the project, I would focus on exploring additional models and techniques to further enhance the performance of the models.
+
+-   Specifically, I would dedicate more time to refining the regression models, perhaps by experimenting with different models to improve their predictive power.
+
+-   Also in case of the existing work, I feel, the ideal approach was to remove the records with purchase_amt = 0 for all models and normalization was not necessary.
+    An interesting avenue for exploration would be to prune the initial regression model without the purchase_amt = 0 values.
