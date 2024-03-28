@@ -27,6 +27,8 @@ Gain insights to enhance your chances of becoming a bestselling author on Amazon
 
 [Python Notebook](https://github.com/JaneJoseph20/Jane-School-Projects/blob/main/Data%20Visualization%20Final%20Project.ipynb)
 
+[R flexboard](https://rawcdn.githack.com/JaneJoseph20/Jane-School-Projects/dd72186db1ae64b3d4f3e21eaedc035ae3b5af64/Jane-Final-Dashboard.html#executive-summary)
+
 ### Project 4: Musical Insights: Analyzing the Stories in Song Data
 In this project, I delved into the world of song lyrics using R, employing Tidy verse to tidy up the data and prep it for analysis.  I roped in topic modeling to figure out the main themes running through the lyrics.  Brought in a network diagram and some graphs to turn numbers into awesome charts and graphs that tell a story.
 
