@@ -1,5 +1,5 @@
-# Jane-School-Projects
-Hello there! I'm Jane, a passionate Master in Business Analytics student at DU - Daniels College of Business, anticipating graduation in March 2024. Throughout my academic journey, I've had the privilege of working on a diverse array of projects. Join me as I highlight some of the exciting projects I've undertaken during my master's program.
+# Jane-Projects
+Hello there! I'm Jane Joseph, a recent graduate with a Master's in Business Analytics from Denver University - Daniels College of Business. Embarking on my journey into the professional world, I'm thrilled to showcase a selection of projects I've undertaken, both during my academic pursuits and beyond. 
 
 ### Project 1: ANALYSIS OF THE SHOW F.R.I.E.N.D.S
 Leveraged Python's popular data analysis libraries in Jupyter Notebook, including Pandas and NumPy, to perform comprehensive data cleaning and analysis of the Friends TV show dataset from Kaggle. Utilized Pandas to import and manipulate Series and DataFrame objects for efficient data wrangling and exploration. Employed Matplotlib and Seaborn data visualization libraries to generate insightful charts and graphs, such as heatmaps and bar charts, that helped highlight key data patterns and trends.
@@ -36,3 +36,8 @@ In this project, I delved into the world of song lyrics using R, employing Tidy 
 Leveraged R's powerful machine learning libraries such as tidymodels and Tree to predict customer purchase behavior. Utilized logistic regression, decision trees, and random forests to model purchase likelihood and amount. Employed R's flexdashboard library to compile all analyses into an interactive dashboard for seamless data consumption.
 
 [R Flexdashboard](https://rawcdn.githack.com/JaneJoseph20/Jane-School-Projects/dd72186db1ae64b3d4f3e21eaedc035ae3b5af64/Jane-Final-Dashboard.html#executive-summary)
+
+### Project 6: Exploring Parental Leave Policies Worldwide: A Power BI Analysis
+In collaboration with Maven Analytics, I embarked on a compelling project delving into parental leave policies worldwide. Using Power BI, I meticulously analyzed data from 1,600 companies spanning across 51 industries to gain valuable insights into maternity and paternity leave practices. Here is the link to view my interactive Power BI dashboard:
+
+[Power BI Dashboard](https://www.mavenanalytics.io/project/4253).
